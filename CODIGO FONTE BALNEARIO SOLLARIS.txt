@@ -1,0 +1,201 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <locale.h>
+#include <ctype.h>
+#include <string.h>
+#include <math.h>
+
+typedef struct{
+	float jetski, veleiro, canoa, quadski, lancha;
+} t_veiculoaqua; //Veículos aquáticos
+
+typedef struct{
+	char nome[50];
+	t_veiculoaqua veiculos;
+} cliente; //Cliente que alugou os veículos
+
+//Declaração de variáveis
+cliente *cl;
+
+//Declaração das funções
+void login();
+void menu();
+void cadastro();
+void erro();
+void sucesso();
+void calculo();
+void retirarCadastro(int indc);
+void locacoes();
+
+//Main
+void main(){
+	setlocale(LC_ALL, "Portuguese");
+
+	cl = malloc(sizeof(cliente));
+	login();
+	free(cl);
+}
+
+//Menu
+void menu(){
+	int op, n;
+	printf("\t\t=============================\n");
+	printf("\n\t\t\tBalneário Solaris\n");
+	printf("\n\t\t=============================\n\n");
+	printf("\t\t\t[1] Cadastrar\n");
+	printf("\t\t\t[2] Locações\n");
+	printf("\t\t\t[3] Retirar cadastro\n");
+	printf("\t\t\t[0] Sair\n");
+	fflush(stdin);
+
+	do{
+		printf("\nDigite uma opção: ");
+		scanf("%d", &op);
+		switch (op){
+		case 1:
+			cadastro();
+			break;
+		case 2:
+			locacoes();
+			break;
+		case 3:
+			printf("Digite o número que representa o cliente(0 a 4): ");
+			scanf("&d", &n);
+			retirarCadastro(n);
+			break;
+		case 0:
+			printf("Saindo...");
+			break;
+		default:
+			printf("Opção inválida!\n");
+		}
+		system("pause");
+		system("cls");
+	} while (op != 0);
+}
+
+//Login para iniciar a função
+void login(){
+	char user[50];
+	long int senha;
+
+	printf("\t\t--------------------\n");
+	printf("\n\t\t\tLOGIN\n");
+	printf("\n\t\t--------------------\n\n");
+	printf("Digite o nome de usuário: ");
+	gets(user);
+	printf("Digite a senha: ");
+	scanf("%ld", &senha);
+
+	if (strcmp(user, "admin") == 0 && senha == 9876){
+		menu();
+	}
+	else{
+		erro();
+	}
+}
+
+//Cadastro de um cliente
+void cadastro(){
+	int i;
+
+	for (i = 0; i < 5; i++){
+		fflush(stdin);
+		printf("\n\t\t=========================\n");
+		printf("\n\t\t\tCADASTRO %d\n", i + 1);
+		printf("\n\t\t=========================\n");
+		printf("\nDigite o nome do cliente: ");
+		gets((cl+i)->nome);
+			
+		printf("\nDigite quantos jetskis o cliente deseja alugar: ");
+		scanf("%f", &(cl+i)->veiculos.jetski);
+			
+		printf("\nDigite quantos veleiros o cliente deseja alugar: ");
+		scanf("%f", &(cl+i)->veiculos.veleiro);
+			
+		printf("\nDigite quantas canoas o cliente deseja alugar: ");
+		scanf("%f", &(cl+i)->veiculos.canoa);
+			
+		printf("\nDigite quantos quadskis o cliente deseja alugar: ");
+		scanf("%f", &(cl+i)->veiculos.quadski);
+			
+		printf("\nDigite quantas lanchas o cliente deseja alugar: ");
+		scanf("%f", &(cl+i)->veiculos.lancha);
+		}
+
+	if (i == 5){
+		calculo();
+	}
+}
+
+//Calcular as mensalidades dos clientes
+void calculo(){
+	int iy;
+	float precojetski = 1000;
+	float precoveleiro = 5000;
+	float precocanoa = 2500;
+	float precoquadski = 1500;
+	float precolancha = 3000;
+	float mens1, mens2, mens3, mens4, mens5;
+	
+	for(iy = 0; iy < 5; iy++){
+		mens1 = ((cl+iy)->veiculos.jetski * precojetski) / 12;
+		mens2 = ((cl+iy)->veiculos.veleiro * precoveleiro) / 12;
+		mens3 = ((cl+iy)->veiculos.canoa * precocanoa) / 12;
+		mens4 = ((cl+iy)->veiculos.quadski * precoquadski) / 12;
+		mens5 = ((cl+iy)->veiculos.lancha * precolancha) / 12;
+	}
+	
+	for(iy = 0; iy < 5; iy++){
+		printf("\n\n\tMENSALIDADES\n");
+		printf("\nNome: %s", (cl+iy)->nome);
+		printf("\nJetski (R$): %.2f", mens1);
+		printf("\nVeleiro (R$): %.2f", mens2);
+		printf("\nCanoa (R$): %.2f", mens3);
+		printf("\nQuadski (R$): %.2f", mens4);
+		printf("\nLancha (R$): %.2f", mens5);
+	}
+}
+
+//Verificar quantos clientes estão cadastradas
+void locacoes(){
+	int ic;
+
+	for (ic = 0; ic < 5; ic++){
+		printf("\n\t\t=========================\n");
+		printf("\n\t\t\tCLIENTE %d\n", ic + 1);
+		printf("\n\t\t=========================\n");
+		
+		printf("\nNome: %s", (cl+ic)->nome);
+		printf("\nJetskis: %.0f", (cl+ic)->veiculos.jetski);
+		printf("\nVeleiros: %.0f", (cl+ic)->veiculos.veleiro);
+		printf("\nCanoas: %.0f", (cl+ic)->veiculos.canoa);
+		printf("\nQuadskis: %.0f", (cl+ic)->veiculos.quadski);
+		printf("\nLanchad: %.0f", (cl+ic)->veiculos.lancha);
+	}
+}
+
+//Retirar cadastro de um cliente
+void retirarCadastro(int indc){
+	char n[50];
+
+	strcpy(n, (cl+indc)->nome);
+	strcpy((cl+indc)->nome, " ");
+	(cl+indc)->veiculos.jetski = 0;
+	(cl+indc)->veiculos.veleiro = 0;
+	(cl+indc)->veiculos.canoa = 0;
+	(cl+indc)->veiculos.quadski = 0;
+	(cl+indc)->veiculos.lancha = 0;
+	
+	sucesso();
+}
+
+//Mensagem de erro
+void erro(){
+	printf("Não foi possível exercer a função.");
+}
+
+//Mensagem de sucesso
+void sucesso(){
+	printf("Função exercida com sucesso.\a\n");
+}
